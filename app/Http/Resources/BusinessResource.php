@@ -20,6 +20,7 @@ class BusinessResource extends JsonResource
         'name_of_business' => $this->name_of_business,
         'description' => $this->description,
         'category' => $this->category,
+        'business_image' => $this->business_image,
         'created_at' => (string) $this->created_at,
         'updated_at' => (string) $this->updated_at,
         'user' => $this->user,

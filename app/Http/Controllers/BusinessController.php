@@ -35,10 +35,10 @@ class BusinessController extends Controller
         $validator = Validator::make($request->all(), [
             'name_of_business' => 'required',
             'category' => 'required',
-            'description' => 'required'
+            'description' => 'required',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 401);
         }
 
@@ -65,8 +65,8 @@ class BusinessController extends Controller
         //get business
         $business = Business::find($id);
 
-        if($business == null){
-            return response()->json([ 'status' => 'Business was deleted'], 404);
+        if ($business == null) {
+            return response()->json(['status' => 'Business was deleted'], 404);
         }
         //return single Business
         return new BusinessResource($business);
@@ -86,7 +86,7 @@ class BusinessController extends Controller
             return response()->json(['error' => 'You can only edit your own business.'], 403);
         }
 
-        $business->update($request->only(['name_of_business', 'category', 'description', 'user_id', 'business_image']));
+        $business->update($request->only(['name_of_business', 'category', 'description']));
 
         return new BusinessResource($business);
     }
@@ -103,8 +103,8 @@ class BusinessController extends Controller
         $business = Business::findOrFail($id);
 
         //return single Business
-        if($business->delete()){
-            return response()->json([ 'status' => 'Busines was deleted'], 200);
+        if ($business->delete()) {
+            return response()->json(['status' => 'Busines was deleted'], 200);
         }
     }
 
@@ -114,11 +114,26 @@ class BusinessController extends Controller
         //get business
         $business = Business::where('category', $category)->get();
 
-        if($business == null){
-            return response()->json([ 'status' => 'Business category is not found'], 404);
+        if ($business == null) {
+            return response()->json(['status' => 'Business category is not found'], 404);
         }
         //return single Business
         return response()->json($business);
+    }
+
+    public function uploadFile(Request $request)
+    {
+
+        if ($request->hasFile('image_file')) {
+            \Cloudder::upload($request->file('image_file'));
+            $c = \Cloudder::getResult();
+            if ($c) {
+                $business = Business::where('user_id', $request->user()->id)
+                    ->update(['business_image' => $c['url']]);
+                return response()->json(['success' => 'You have successfully upload images.', $business]);
+            }
+
+        }
     }
 
 }

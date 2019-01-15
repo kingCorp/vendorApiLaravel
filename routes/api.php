@@ -33,6 +33,8 @@ Route::delete('business/{id}', 'BusinessController@destroy');
 Route::get('business/category/{category}', 'BusinessController@category');
 //logout
 Route::get('logout', 'AuthController@logout');
+//upload images
+Route::post('upload-file', ['as'=>'upload-file','uses'=>'BusinessController@uploadFile']);
 
 });
 
