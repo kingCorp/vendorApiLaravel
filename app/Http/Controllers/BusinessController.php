@@ -79,16 +79,16 @@ class BusinessController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Businsess $business)
+    public function update(Request $request, $id)
     {
+        $business = Business::find($id);
         // check if currently authenticated user is the owner of the buisness
         if ($request->user()->id !== $business->user_id) {
             return response()->json(['error' => 'You can only edit your own business.'], 403);
         }
 
         $business->update($request->only(['name_of_business', 'category', 'description']));
-
-        return new BusinessResource($business);
+        return response()->json(["success"=>"update sucessfull", $business]);
     }
 
     /**

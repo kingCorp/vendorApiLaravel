@@ -26,7 +26,7 @@ Route::post('business', 'BusinessController@store');
 //view businesses
 Route::get('business', 'BusinessController@index');
 //update business
-Route::put('business', 'BusinessController@update');
+Route::put('business/{id}', 'BusinessController@update');
 //delete business
 Route::delete('business/{id}', 'BusinessController@destroy');
 //categories
