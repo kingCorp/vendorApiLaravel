@@ -97,14 +97,22 @@ class BusinessController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         //get Business
-        $business = Business::findOrFail($id);
-
+        $business = Business::find($id);
+        
+        // check if currently authenticated user is the owner of the buisness
+        if ($business->id == null) {
+            return response()->json(['error' => 'business has been deleted or doesnt exist'], 403);
+        }
+        // check if currently authenticated user is the owner of the buisness
+        if ($request->user()->id !== $business->user_id) {
+            return response()->json(['error' => 'You can only edit your own business.'], 403);
+        }
         //return single Business
         if ($business->delete()) {
-            return response()->json(['status' => 'Busines was deleted'], 200);
+            return response()->json(['status' => 'Business was deleted'], 200);
         }
     }
 
